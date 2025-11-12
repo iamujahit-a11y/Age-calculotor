@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🕒 Age Calculator – iammujahit Premium</title>
+<style>
+  :root {
+    --bg-color: #0a0f15;
+    --text-color: #f4f4f9;
+    --card-bg: #1c1f26;
+    --accent-color: #007bff;
+    --shadow-color: rgba(0,0,0,0.5);
+  }
+
+  body.light {
+    --bg-color: #f4f4f9;
+    --text-color: #0a0f15;
+    --card-bg: #ffffff;
+    --accent-color: #0066cc;
+    --shadow-color: rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  .container {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 0 25px var(--shadow-color);
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.9);}
+    to {opacity: 1; transform: scale(1);}
+  }
+
+  h1 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--accent-color);
+    width: 100%;
+    font-size: 1em;
+    background: transparent;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  button {
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+
+  #result {
+    margin-top: 15px;
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+
+  #error-message {
+    color: #ff4d4d;
+    font-weight: 600;
+    display: none;
+  }
+
+  .clock {
+    margin-top: 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--accent-color);
+  }
+
+  .toggle-mode {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: var(--accent-color);
+    border: none;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-mode:hover {
+    opacity: 0.8;
+  }
+
+  footer {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+<button class="toggle-mode" onclick="toggleMode()">🌙 Dark</button>
+<div class="container">
+  <h1>Age Calculator</h1>
+  <label for="birthdate">Enter Your Date of Birth:</label>
+  <input type="date" id="birthdate">
+  <div>
+    <button onclick="calculateAge()">Calculate</button>
+    <button onclick="resetCalculator()">Reset</button>
+  </div>
+  <div id="error-message">⚠️ Please enter a valid date!</div>
+  <div id="result">
+    <p id="ageResult"></p>
+    <div id="ageDetail"></div>
+  </div>
+  <div class="clock" id="clock"></div>
+  <footer>© iammujahit Premium Tools</footer>
+</div>
+
+<script>
+function calculateAge() {
+  const birthdate = document.getElementById('birthdate').value;
+  const result = document.getElementById('result');
+  const ageResult = document.getElementById('ageResult');
+  const ageDetail = document.getElementById('ageDetail');
+  const errorMsg = document.getElementById('error-message');
+
+  if (!birthdate) {
+    errorMsg.style.display = 'block';
+    result.style.display = 'none';
+    return;
+  }
+
+  errorMsg.style.display = 'none';
+  const today = new Date();
+  const birthDate = new Date(birthdate);
+
+  if (birthDate > today) {
+    errorMsg.style.display = 'block';
+    errorMsg.innerText = '⚠️ Birth date cannot be in the future!';
+    result.style.display = 'none';
+    return;
+  }
+
+  let years = today.getFullYear() - birthDate.getFullYear();
+  let months = today.getMonth() - birthDate.getMonth();
+  let days = today.getDate() - birthDate.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const ageInMonths = years * 12 + months;
+  const ageInWeeks = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24 * 7));
+  const ageInDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+  const ageInHours = Math.floor((today - birthDate) / (1000 * 60 * 60));
+  const ageInMinutes = Math.floor((today - birthDate) / (1000 * 60));
+  const ageInSeconds = Math.floor((today - birthDate) / 1000);
+
+  result.style.display = 'block';
+  ageResult.innerHTML = `🎉 You are <strong>${years}</strong> years, <strong>${months}</strong> months, and <strong>${days}</strong> days old.`;
+
+  ageDetail.innerHTML = `
+    <p><strong>Detailed Breakdown:</strong></p>
+    <p>${ageInMonths.toLocaleString()} months</p>
+    <p>${ageInWeeks.toLocaleString()} weeks</p>
+    <p>${ageInDays.toLocaleString()} days</p>
+    <p>${ageInHours.toLocaleString()} hours</p>
+    <p>${ageInMinutes.toLocaleString()} minutes</p>
+    <p>${ageInSeconds.toLocaleString()} seconds</p>
+  `;
+}
+
+function resetCalculator() {
+  document.getElementById('birthdate').value = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('error-message').style.display = 'none';
+}
+
+function updateClock() {
+  const clock = document.getElementById('clock');
+  const now = new Date();
+  clock.textContent = now.toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function toggleMode() {
+  document.body.classList.toggle('light');
+  const modeBtn = document.querySelector('.toggle-mode');
+  if (document.body.classList.contains('light')) {
+    modeBtn.textContent = '🌞 Light';
+  } else {
+    modeBtn.textContent = '🌙 Dark';
+  }
+}
+</script>
+</body>
+</html>
